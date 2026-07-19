@@ -18,6 +18,16 @@
           "minimum": "14"
         }
       }
+    ],
+    "requires": [
+      {
+        "id": "acks-lib",
+        "type": "module",
+        "reason": "tables registry + the ruledata-import service contract this module provides",
+        "compatibility": {
+          "minimum": "0.7.0"
+        }
+      }
     ]
   },
   "manifest": "https://github.com/NocTempre/acks-location/releases/latest/download/module.json",
