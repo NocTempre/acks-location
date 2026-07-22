@@ -90,3 +90,47 @@ export const ruledataImport = {
       .sort((a, b) => (a.id ?? "").localeCompare(b.id ?? "") || a.priority - b.priority);
   },
 };
+
+/* ------------------------- override layer (priority 30) ------------------------- */
+/**
+ * GM tweaks live as PARTIAL docs at OVERRIDE priority in the same store —
+ * one entry per docId holding only the overridden tables (the registry
+ * layers per table, so the world import shows through underneath).
+ * `_meta[tableKey]` records where each override came from (source uuid).
+ */
+
+const overrideKey = (docId) => `${docId}:${lib().tables.PRIORITY.OVERRIDE}`;
+
+export function overrideMeta(docId, tableKey) {
+  const entry = readStore()[overrideKey(docId)];
+  return entry?.doc?._meta?.[tableKey] ?? null;
+}
+
+export function hasOverride(docId, tableKey) {
+  const entry = readStore()[overrideKey(docId)];
+  return !!(entry?.doc?.tables && tableKey in entry.doc.tables);
+}
+
+/** Set (or replace) one table's override. tableKey = tableId. */
+export async function setOverride(docId, tableId, data, meta = {}) {
+  if (!game.user.isGM) throw new Error(`${MODULE_ID}: GM only`);
+  const P = lib().tables.PRIORITY.OVERRIDE;
+  const store = readStore();
+  const entry = store[overrideKey(docId)] ?? { doc: { id: docId, tables: {}, _meta: {} }, priority: P, source: "override" };
+  entry.doc.tables = { ...(entry.doc.tables ?? {}), [tableId]: data };
+  entry.doc._meta = { ...(entry.doc._meta ?? {}), [tableId]: { ...meta, time: Date.now() } };
+  store[overrideKey(docId)] = entry;
+  await game.settings.set(MODULE_ID, SETTING, store);
+}
+
+/** Remove one table's override; drops the layer when nothing is left. */
+export async function clearOverride(docId, tableId) {
+  if (!game.user.isGM) throw new Error(`${MODULE_ID}: GM only`);
+  const store = readStore();
+  const entry = store[overrideKey(docId)];
+  if (!entry?.doc) return;
+  delete entry.doc.tables?.[tableId];
+  delete entry.doc._meta?.[tableId];
+  if (!Object.keys(entry.doc.tables ?? {}).length) delete store[overrideKey(docId)];
+  await game.settings.set(MODULE_ID, SETTING, store);
+}

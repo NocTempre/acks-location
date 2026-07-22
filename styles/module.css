@@ -1,1 +1,40 @@
 /* acks-location styles. Scope every selector under a module-specific class. */
+
+.acks-location.ruledata-browser .ruledata-browser-body {
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+.acks-location.ruledata-browser .ruledata-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-13, 13px);
+}
+.acks-location.ruledata-browser .ruledata-table td,
+.acks-location.ruledata-browser .ruledata-table th {
+  padding: 0.15rem 0.4rem;
+  text-align: left;
+  border-top: 1px dotted var(--color-border-light-tertiary, #b5b3a4);
+}
+.acks-location.ruledata-browser tr.overridden td:first-child {
+  color: var(--color-text-hyperlink, #1c60a5);
+  font-weight: bold;
+}
+.acks-location.ruledata-browser .override-badge {
+  background: var(--color-text-hyperlink, #1c60a5);
+  color: #fff;
+  border-radius: 3px;
+  padding: 0 0.35rem;
+  font-size: 0.85em;
+}
+.acks-location.ruledata-browser .row-actions a {
+  margin-right: 0.35rem;
+}
+.acks-location.ruledata-browser [data-entry-key].drag-over,
+.acks-location.ruledata-browser [data-entry-key]:hover {
+  background: rgba(28, 96, 165, 0.08);
+}
+.acks-location-json.ruledata-json {
+  max-height: 420px;
+  overflow: auto;
+  font-size: 12px;
+}

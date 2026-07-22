@@ -2,8 +2,12 @@
   "id": "acks-location",
   "title": "ACKS II — Locations & Settlements",
   "description": "Location primitives for the ACKS II module family: the settlement/location actor, market and demographic data schemas, and per-world imported rules tables (people, wages, availability, class distributions) served to sibling modules through acks-lib. Ships no book content - tables are imported from your own ACKS II PDFs.",
-  "version": "0.1.1",
-  "authors": [{ "name": "NocTempre" }],
+  "version": "0.2.0",
+  "authors": [
+    {
+      "name": "NocTempre"
+    }
+  ],
   "license": "LICENSE",
   "compatibility": {
     "minimum": "14",
@@ -23,9 +27,9 @@
       {
         "id": "acks-lib",
         "type": "module",
-        "reason": "tables registry + the ruledata-import service contract this module provides",
+        "reason": "tables registry (incl. the per-table OVERRIDE layer) + the ruledata-import service contract this module provides",
         "compatibility": {
-          "minimum": "0.7.0"
+          "minimum": "0.8.0"
         }
       }
     ]
@@ -37,8 +41,12 @@
       "idPrefix": "acksl"
     }
   },
-  "esmodules": ["scripts/module.mjs"],
-  "styles": ["styles/module.css"],
+  "esmodules": [
+    "scripts/module.mjs"
+  ],
+  "styles": [
+    "styles/module.css"
+  ],
   "languages": [
     {
       "lang": "en",
