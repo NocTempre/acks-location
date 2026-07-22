@@ -18,7 +18,7 @@ Hooks.once("init", () => {
 
   const lib = globalThis.acksLib;
   if (!lib?.services || (lib.apiVersion ?? 0) < 3) {
-    console.error(`${MODULE_ID} | acks-lib >= 0.7.0 (apiVersion 3) is required — table import disabled`);
+    console.error(`${MODULE_ID} | acks-lib >= 0.8.0 (apiVersion 3+) is required — table import disabled`);
     return;
   }
   lib.services.register("ruledata-import", ruledataImport);

@@ -2,7 +2,7 @@
   "id": "acks-location",
   "title": "ACKS II — Locations & Settlements",
   "description": "Location primitives for the ACKS II module family: the settlement/location actor, market and demographic data schemas, and per-world imported rules tables (people, wages, availability, class distributions) served to sibling modules through acks-lib. Ships no book content - tables are imported from your own ACKS II PDFs.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "authors": [
     {
       "name": "NocTempre"
@@ -34,6 +34,7 @@
       }
     ]
   },
+  "url": "https://github.com/NocTempre/acks-location",
   "manifest": "https://github.com/NocTempre/acks-location/releases/latest/download/module.json",
   "download": "https://github.com/NocTempre/acks-location/releases/latest/download/module.zip",
   "flags": {
