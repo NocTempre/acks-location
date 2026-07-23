@@ -74,6 +74,22 @@ export const ruledataImport = {
       ui.notifications.error(`acks-location | "${doc.id}" did not persist to world data — check the world's storage and re-import.`);
       throw new Error(`acks-location: persist verification failed for "${doc.id}"`);
     }
+    // Imported tables become FOUNDRY documents too (prefilled RollTables /
+    // JSON journal pages) — the audit-and-tweak surface. Best-effort.
+    try {
+      const { materializeAll } = await import("./table-docs.mjs");
+      await materializeAll();
+    } catch (err) {
+      console.warn(`${MODULE_ID} | auto-materialize after import failed`, err);
+    }
+  },
+
+  /** Contract v1.1 (additive): materialize every imported table as a
+   *  Foundry document; consumers (cookbook macros) call this by service. */
+  async materializeDocs() {
+    if (!game.user.isGM) throw new Error(`${MODULE_ID}: GM only`);
+    const { materializeAll } = await import("./table-docs.mjs");
+    return materializeAll();
   },
 
   async removeDoc(docId, { priority } = {}) {

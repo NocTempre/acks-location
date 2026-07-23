@@ -239,6 +239,52 @@ export async function exportEntry(entry) {
   return { uuid: created.uuid, kind: "journal" };
 }
 
+/* ------------------------- bulk materialization ------------------------- */
+
+/**
+ * Materialize EVERY imported table as a Foundry document (user directive:
+ * imported tables are saved as Foundry tables and journals, not just stored
+ * in the module). Prefilled exports reuse/update matching existing documents
+ * by name; tables that consumers EXPECT (acksLib.tables.expectedTables) but
+ * that no import provided get an EMPTY placeholder — first of its kind only
+ * — which the GM can fill by hand or replace by drag-drop.
+ * @returns {{exported: number, placeholders: number}}
+ */
+export async function materializeAll() {
+  let exported = 0;
+  let placeholders = 0;
+  for (const entry of listEntries()) {
+    try {
+      await exportEntry(entry);
+      exported++;
+    } catch (err) {
+      console.warn(`${MODULE_ID} | materialize failed for ${entry.key}`, err);
+    }
+  }
+  const t = lib()?.tables;
+  const have = new Set(listEntries().map((e) => `${e.docId}.${e.tableId}`));
+  for (const { docId, tableIds } of t?.expectedTables?.() ?? []) {
+    for (const tableId of tableIds) {
+      const key = `${docId}.${tableId}`;
+      if (have.has(key)) continue;
+      const journal = await ensureJournal();
+      if (journal.pages.find((p) => p.name === key)) continue; // reuse the existing one
+      await journal.createEmbeddedDocuments("JournalEntryPage", [
+        {
+          name: key,
+          type: "text",
+          text: {
+            content: `<p><em>${game.i18n.localize("ACKS-LOCATION.tables.placeholderHint")}</em></p><pre><code>{}</code></pre>`,
+            format: CONST.JOURNAL_ENTRY_PAGE_FORMATS?.HTML ?? 1,
+          },
+        },
+      ]);
+      placeholders++;
+    }
+  }
+  return { exported, placeholders };
+}
+
 /* ------------------------- override via drop ------------------------- */
 
 /**
